@@ -1,49 +1,86 @@
-// import React from 'react';
+import React, { useState, useEffect } from 'react'
+import SearchForm from './SearchForm'
+
+const URI = "https://www.govtrack.us/api/v2/role?current=true&role_type=senator"
 
 
+// filterAll iterates over filter object looping through each key:value pair, 
+//each loop filters by a new condition returning the filtered array, 
+//each loop reduces the results array by one condition until all conditions have been filtered. 
+const filterAll = (senators, filter) => {
+  console.log('filterAll:', filter)
+  let results = senators
+  Object.keys(filter).forEach((item) => {
+    results = results.filter(senator => {
+      let check = eval(`senator.${item}`)
+      return check === filter[item]
+    })
+  });
+  return results
+}
 
+// const filterByState = (senators, state) => senators.filter(senator => senator.state === state.toUpperCase())
+// const filterByParty = (senators, party) => senators.filter(senator => senator.party === party)
+// // const filterByPartyNState = (senators, state, party) => senators.filter(senator => senator.state === state.toUpperCase() && senator.party === party)
 
-// function Search() {
-//   return (
-//     <div className="Search">
-//     <p> SEARCH </p>
-//     </div>
-//   );
+const getSenators = async (url) => fetch(url).then(res => res.json()).then(data => data.objects)
+
+// const searchSenators = (senators, filter) => {
+//   // console.log('searchSenators filter:', filter)
+//   // console.log('searchSenators senators:', senators)
+//   // Make sure the filter.party and filter.state are both being used
+//   if (filter.party && filter.state)
+//     return senators.filter(senator => filter.party === senator.party && filter.state.toUpperCase() === senator.state)
+//   else if (!filter.party && !filter.state)
+//     return senators
+//   // Determine which filter is being used and filter appropriately predicated upon the filter object 
+//   return filter.party ?
+//     filterByParty(senators, filter.party) :
+//     filterByState(senators, filter.state)
 // }
 
-// export default Search;
+const style = {
+  color: 'blue',
+  textAlign: 'left'
+}
 
+export default () => {
+  const [senators, setSenators] = useState([])
+  const [searched, setSearched] = useState([])
+  // console.log('senators', senators)
 
-import React, { useState } from 'react'
+  const searchedResults = searched.map((senator, index) =>
+    <div key={index} style={style}>
+      <ul>
+        <li>Name: {senator.person.firstname} {senator.person.lastname}</li>
+        <li>State: {senator.state}</li>
+        <li>Party: {senator.party}</li>
+        <li>Rank: {senator.senator_rank}</li>
+        <li>Class: {senator.senator_class}</li>
+        <li>Leadership Title: {senator.leadership_title}</li>
+      </ul>
+      <hr />
+    </div>
+  )
 
-// export default ({ onSearched }) => {
-export default props => {
-  const [filterState, setFilterState] = useState('')
-  const [filterName, setName] = useState('')
-  const [filterParty, setParty] = useState('')
+  useEffect(() => {
+    getSenators(URI).then(res => setSenators(res))
+  })
 
   return (
-    <form
-      onSubmit={e => {
-        e.preventDefault()
-        const filter = { state: filterState, party: filterParty, name: filterName }
+    <div>
+      <SearchForm
+        onSearched={filter => {
+          // console.log('filter', filter)
+          const filtered = filterAll(senators, filter)
+          // const filtered = searchSenators(senators, filter)
+          setSearched(filtered)
+          console.log('filtered', filtered)
+        }} />
 
-        if (props.onSearched) {
-          props.onSearched(filter)
-        }
-      }}
-    >
-      <label htmlFor="state">State</label>
-      <input type="text" className="inPut" name="state" minLength="2" maxLength="2" value={filterState} onChange={e => setFilterState(e.target.value)} />
-      <label htmlFor="name">Name</label>
-      <input type="text" className="inPut" name="name" value={filterName} onChange={e => setName(e.target.value)} />
-      <select onChange={e => setParty(e.target.value)}>
-        <option value="">All</option>
-        <option value="Democrat">Democrat</option>
-        <option value="Republican">Republican</option>
-        <option value="Independent">Independent</option>
-      </select>
-      <input type="submit" value="Submit" />
-    </form>
+      <ul>
+        {searchedResults}
+      </ul>
+    </div>
   )
 }

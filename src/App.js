@@ -1,13 +1,8 @@
 import React from 'react';
 import './App.css';
 import {Route, Link} from 'react-micro-router';
-import Search from './Components/search'; 
-import Home from './Components/home';
-
-const URI = "https://www.govtrack.us/api/v2/role?current=true&role_type=senator"
-fetch(URI)
-    .then(res => res.json()
-    );
+import Search from './Components/Search'; 
+import Home from './Components/Home';
 
 
 
