@@ -16,7 +16,12 @@ export default props => {
     for (let i = 0; i < inputs.length; i++) {
       let filterKeys = inputs[i].name
       let filterVals = eval(`filter${filterKeys.charAt(0).toUpperCase() + filterKeys.slice(1)}`)
-      if (filterKeys !== '' && filterVals !== '') { filter[filterKeys] = (filterVals) }
+      if (filterKeys !== '' && filterVals !== '') { filter[filterKeys] = (filterVals) } // this works for all but leadership_title
+      // if('leadership_title' === filterKeys && filterVals !== "") { 
+      //   console.log('leadership_title filterVals',filterVals)
+      //   return filter[filterKeys] = (filterVals) 
+      // }
+      // if (filterKeys !== '' && filterVals !== '') { filter[filterKeys] = (filterVals) }
     }
   }
 
@@ -62,8 +67,8 @@ export default props => {
 
       <select name ="leadership_title" onChange={e => setLeadership(e.target.value)}>
       <option value="">Select</option>
-        <option value="true">True</option>
-        <option value="false">False</option>
+        <option value="!null">True</option>
+        <option value="null">False</option>
       </select>
       {/**end test */}
       

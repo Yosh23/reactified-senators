@@ -13,6 +13,17 @@ const filterAll = (senators, filter) => {
   Object.keys(filter).forEach((item) => {
     results = results.filter(senator => {
       let check = eval(`senator.${item}`)
+      // console.log('filter[item]', Boolean(eval(filter[item]))) // this is the val
+      console.log('--filter item', item) // this is the key
+      if(item === 'leadership_title') {
+        if(filter[item] === '!null') {
+          // console.log('working check', Boolean(check) )
+          // console.log('working boolean', Boolean(filter[item]))
+          // return console.log('working')
+          return Boolean(check) === Boolean(filter[item])
+        }
+        return check === eval(filter[item])
+      }
       return check === filter[item]
     })
   });
