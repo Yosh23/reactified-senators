@@ -1,8 +1,8 @@
 import React from 'react';
 import './App.css';
 import {Route, Link} from 'react-micro-router';
-import Search from './Components/Search'; 
-import Home from './Components/Home';
+import Search from './Components/search'; 
+import Home from './Components/home';
 
 
 
